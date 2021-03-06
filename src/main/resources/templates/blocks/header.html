@@ -6,6 +6,8 @@
         <a class="p-2 text-dark" href="/">Main</a>
         <a class="p-2 text-dark" href="/profile" sec:authorize="isAuthenticated()">My Profile</a>
         <a class="p-2 text-dark" href="/quiz/add"  sec:authorize="hasRole('ROLE_ADMIN')">Add Quiz</a>
+        <a class="p-2 text-dark" href="/group/add"  sec:authorize="hasRole('ROLE_ADMIN')">Add Group</a>
+
         <a class="p-2 text-dark" href="/statistics"  sec:authorize="hasRole('ROLE_ADMIN')">Statistics</a>
 
         <a class="p-2 text-dark" href="/about">About</a>
