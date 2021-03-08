@@ -29,8 +29,8 @@ public class AuthenticationController {
     private final RoleRepository roleRepository;
     @Autowired
     private final GroupRepository groupRepository;
-    @Autowired
-    private final InterestRepository interestRepository;
+    //@Autowired
+    //private final InterestRepository interestRepository;
     @Autowired
     private final UserService userService;
 
@@ -38,7 +38,7 @@ public class AuthenticationController {
     public AuthenticationController(RoleRepository roleRepository, GroupRepository groupRepository, InterestRepository interestRepository, UserService userService) {
         this.roleRepository = roleRepository;
         this.groupRepository = groupRepository;
-        this.interestRepository = interestRepository;
+        //this.interestRepository = interestRepository;
         this.userService = userService;
     }
 
@@ -46,25 +46,26 @@ public class AuthenticationController {
     @GetMapping("/sign/up")
     public String signUpPage(Model model) {
         Iterable<Group> groupList=groupRepository.findAll();
-        Iterable<Interest> interests=interestRepository.findAll();
+        //Iterable<Interest> interests=interestRepository.findAll();
         model.addAttribute("groups",groupList);
-        model.addAttribute("interests",interests);
+        //model.addAttribute("interests",interests);
         return "signup-page";
     }
 
     @PostMapping("/sign/up")
     public String signUp(@RequestParam(name = "txtUsername") String txtUsername,
                          @RequestParam(name = "txtPassword") String txtPassword,
-                         @RequestParam(name = "txtInterests") List<String> interests,
+                         //@RequestParam(name = "txtInterests") List<String> interests,
                          @RequestParam(name = "txtGroup") String group) {
-        List<Interest> interestList = new ArrayList<>();
-        interests.forEach(e -> interestList.add(interestRepository.getByName(e)));
+        //List<Interest> interestList = new ArrayList<>();
+        //interests.forEach(e -> interestList.add(interestRepository.getByName(e)));
 
         User user = new User(txtUsername,
                 passwordEncoder.encode(txtPassword),
                 roleRepository.getRoleByName("USER"),
-                groupRepository.getGroupByName(group),
-                interestList);
+                groupRepository.getGroupByName(group)
+                //,interestList
+        );
 
         userService.save(user);
         return "redirect:/login";

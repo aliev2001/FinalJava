@@ -23,15 +23,15 @@ public class AuthorizationController {
     private final UserService userService;
     @Autowired
     private final GroupRepository groupRepository;
-    @Autowired
-    private final InterestRepository interestRepository;
+    //@Autowired
+    //private final InterestRepository interestRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    public AuthorizationController(UserService userService, GroupRepository groupRepository, InterestRepository interestRepository, PasswordEncoder passwordEncoder) {
+    public AuthorizationController(UserService userService, GroupRepository groupRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.groupRepository = groupRepository;
-        this.interestRepository = interestRepository;
+        //this.interestRepository = interestRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -60,10 +60,10 @@ public class AuthorizationController {
 
         User user= userService.getUserByUsername(principal.getName());
         Iterable<Group> groupList=groupRepository.findAll();
-        Iterable<Interest> interests=interestRepository.findAll();
+        //Iterable<Interest> interests=interestRepository.findAll();
 
         model.addAttribute("groups",groupList);
-        model.addAttribute("interests",interests);
+        //model.addAttribute("interests",interests);
         model.addAttribute("me",user);
 
         return "edit-profile";
@@ -73,17 +73,17 @@ public class AuthorizationController {
     public String postProfilePage(Principal principal,
                                   @RequestParam(name = "txtUsername") String txtUsername,
                                   @RequestParam(name = "txtPassword") String txtPassword,
-                                  @RequestParam(name = "txtInterests") List<String> interests,
+                                  //@RequestParam(name = "txtInterests") List<String> interests,
                                   @RequestParam(name = "txtGroup") String group) {
-        List<Interest> interestList = new ArrayList<>();
-        interests.forEach(e -> interestList.add(interestRepository.getByName(e)));
+        //List<Interest> interestList = new ArrayList<>();
+        //interests.forEach(e -> interestList.add(interestRepository.getByName(e)));
 
         User user= userService.getUserByUsername(principal.getName());
 
         user.setUsername(txtUsername);
         user.setGroup(groupRepository.getGroupByName(group));
         user.setPassword(passwordEncoder.encode(txtPassword));
-        user.setInterestList(interestList);
+       // user.setInterestList(interestList);
 
         userService.update(user);
 

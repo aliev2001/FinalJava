@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -60,7 +63,7 @@ public class MainController {
     @GetMapping("/")
     public String index(
             @RequestParam(required = false, defaultValue = "") String filter,
-            Model model
+            Model model, Principal principal
     ) {
         Iterable<Quiz> quizzes;
 
@@ -102,16 +105,21 @@ public class MainController {
             e.printStackTrace();
         } finally {
             model.addAttribute("groups", json);
-            model.addAttribute("scores",scoreRepository.getAllByQuiz(quiz));
+            model.addAttribute("scores", scoreRepository.getAllByQuiz(quiz));
         }
         return "statistics-page";
     }
 
     @GetMapping("/pass/{quiz}")
-    public String passQuiz(Model model, @PathVariable(name = "quiz") Quiz quiz) {
+    public String passQuiz(Model model, @PathVariable(name = "quiz") Quiz quiz, Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        if (scoreRepository.existsByUserAndQuiz(user, quiz)) {
+            Score score = scoreRepository.getByUserAndQuiz(user, quiz);
+            return "redirect:/score/" + score.getId();
+        }
         model.addAttribute("quiz", quiz);
-        model.addAttribute("form",new AnswerSheet(quiz));
-        model.addAttribute("questionDto",new QuestionDto());
+        model.addAttribute("form", new AnswerSheet(quiz));
+        model.addAttribute("questionDto", new QuestionDto());
         return "quiz-pass-page";
 
     }
@@ -120,9 +128,9 @@ public class MainController {
     public String passQuizPost(Principal principal, Model model, @PathVariable(name = "quiz") Quiz quiz, HttpServletRequest httpServletRequest) {
         User user = userService.getUserByUsername(principal.getName());
 
-        List<Choice> choiceList=new ArrayList<>();
+        List<Choice> choiceList = new ArrayList<>();
 
-        quiz.getQuestions().forEach(e->choiceList.add(new Choice(e.getId(),httpServletRequest.getParameter(String.valueOf(e.getId())))));
+        quiz.getQuestions().forEach(e -> choiceList.add(new Choice(e.getId(), httpServletRequest.getParameter(String.valueOf(e.getId())))));
 
         System.out.println(choiceList);
 
@@ -134,7 +142,7 @@ public class MainController {
         Score score = new Score();
         score.setQuiz(quiz);
         score.setUser(user);
-        System.out.println("Size:"+resultList.size());
+        System.out.println("Size:" + resultList.size());
 
         resultList.forEach(e -> {
             if (e.isTrue()) {
@@ -142,21 +150,43 @@ public class MainController {
                 score.addScore();
             }
         });
-        Score score1=scoreRepository.save(score);
+        Score score1 = scoreRepository.save(score);
 
         return "redirect:/score/" + score1.getId();
 
     }
 
     @GetMapping("/score/{score}")
-    public String getScore(Model model, @PathVariable(name = "score") int score) {
-        Optional<Score> score1=scoreRepository.findById(score);
-        if(score1.isPresent()){
+    public String getScore(Model model, @PathVariable(name = "score") int score, Principal principal) {
+        Optional<Score> score1 = scoreRepository.findById(score);
+        User user = userService.getUserByUsername(principal.getName());
+
+        if (score1.isPresent()) {
+            List<Result> resultList = resultRepository.getByQuestionQuizAndUser(score1.get().getQuiz(), user);
+            Quiz quiz = score1.get().getQuiz();
             model.addAttribute("score", score1.get());
+            model.addAttribute("results", resultList);
+            model.addAttribute("length", quiz.getQuestions().size());
             return "score-page";
         }
         return "error-page";
 
+    }
+
+    @GetMapping("/exact/statistics/{score}")
+    public String getExactStatistics(@PathVariable(name = "score") int id, Model model) {
+        Optional<Score> score1 = scoreRepository.findById(id);
+
+        if (score1.isPresent()) {
+            List<Result> resultList = resultRepository.getByQuestionQuizAndUser(score1.get().getQuiz(), score1.get().getUser());
+            Quiz quiz = score1.get().getQuiz();
+
+            model.addAttribute("score", score1.get());
+            model.addAttribute("results", resultList);
+            model.addAttribute("length", quiz.getQuestions().size());
+            return "exact-statistics-page";
+        }
+        return "error-page";
     }
 
 

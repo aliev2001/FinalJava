@@ -12,19 +12,71 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"
         integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd"
         crossorigin="anonymous"></script>
+<style>
+    body{
+        margin-top:20px;
+        color: #1a202c;
+        text-align: left;
+        background-color: #e2e8f0;
+    }
+    .main-body {
+        padding: 15px;
+    }
+    .card {
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+
+    .gutters-sm {
+        margin-right: -8px;
+        margin-left: -8px;
+    }
+
+    .gutters-sm>.col, .gutters-sm>[class*=col-] {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+    .mb-3, .my-3 {
+        margin-bottom: 1rem!important;
+    }
+
+    .bg-gray-300 {
+        background-color: #e2e8f0;
+    }
+    .h-100 {
+        height: 100%!important;
+    }
+    .shadow-none {
+        box-shadow: none!important;
+    }
+
+</style>
 </head>
 <body>
 <header th:insert="blocks/header :: header"/>
 <div class="container mt-5">
     <form th:object="${form}" th:action="${'/pass/'+quiz}" method="post">
         <div>
-            <h2 th:text="${quiz.getName()}"></h2>
-            <h6 class=" badge badge-dark">#<span th:text="${quiz.tag}"></span></h6>
-            <p><strong>Description: </strong><span th:text="${quiz.text}"></span></p>
-        </div>
 
+            <h2 th:text="${quiz.getName()}"></h2>
         <div class="bg-light col-8 m-3" th:each="question : ${form.getQuestionDtos()}">
-            <div class="m-2"><strong>Question: </strong>
                 <span th:text="${question.text}"></span>
             </div>
             <div class="radio" th:object="${questionDto}" th:each="option,i: ${question.options.entrySet()}">
@@ -32,7 +84,7 @@
                            th:text="${option.getValue()}" >
             </div>
         </div>
-        <button type="submit" class="btn btn-dark">Pass</button>
+        <button type="submit" class="btn btn-dark">Vote</button>
 
     </form>
 </div>

@@ -98,4 +98,14 @@ public class Question {
     public int hashCode() {
         return Objects.hash(getId(), getText(), getOptions(), getAnswerNumber());
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", options=" + options +
+                ", answerNumber=" + answerNumber +
+                '}';
+    }
 }

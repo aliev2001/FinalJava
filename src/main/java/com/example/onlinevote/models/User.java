@@ -35,6 +35,13 @@ public class User {
         this.interestList = interestList;
     }
 
+    public User(String username, String password, Role role, Group group) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.group = group;
+    }
+
     public User() {
 
     }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sign up</title>
+    <title>Registration</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
@@ -15,6 +15,62 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"
             integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd"
             crossorigin="anonymous"></script>
+    <style>
+        body{
+            margin-top:20px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+        .main-body {
+            padding: 15px;
+        }
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0,0,0,.125);
+            border-radius: .25rem;
+        }
+
+        .card-body {
+            flex: 1 1 auto;
+            min-height: 1px;
+            padding: 1rem;
+        }
+
+        .gutters-sm {
+            margin-right: -8px;
+            margin-left: -8px;
+        }
+
+        .gutters-sm>.col, .gutters-sm>[class*=col-] {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+        .mb-3, .my-3 {
+            margin-bottom: 1rem!important;
+        }
+
+        .bg-gray-300 {
+            background-color: #e2e8f0;
+        }
+        .h-100 {
+            height: 100%!important;
+        }
+        .shadow-none {
+            box-shadow: none!important;
+        }
+
+    </style>
 </head>
 <body>
 <header th:insert="blocks/header :: header"/>
@@ -48,17 +104,10 @@
                                 <option th:each="group :${groups}" th:value="${group.getName()}" th:text="${group.getName()}"/>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <div th:each="interest:${interests}"  class="form-check form-check-inline">
-                                <input name="txtInterests" class="form-check-input" type="checkbox" id="inlineCheckbox1" th:value="${interest.getName()}">
-                                <label class="form-check-label" for="inlineCheckbox1" th:text="${interest.getName()}"/>
-                            </div>
-                        </div>
-
-
                         <!-- Login Button -->
-                        <div class="form-actions" style="margin-top: 12px;">
-                            <button type="submit" class="btn btn-success">Sign up</button>
+                        <div class="form-actions" style="margin-top: 12px;margin-left: 150px">
+                            <a class="btn btn-primary" href="/login" sec:authorize="isAnonymous()">Login</a>
+                            <button type="submit" class="btn btn-primary">Registration</button>
                         </div>
                     </fieldset>
                 </form>

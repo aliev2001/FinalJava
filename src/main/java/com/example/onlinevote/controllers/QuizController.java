@@ -68,14 +68,13 @@ public class QuizController {
     }
 
     @GetMapping("/add")
-    @Secured("ROLE_ADMIN")
     public String addQuiz(Model model){
         model.addAttribute("quiz", new Quiz());
         model.addAttribute("questions", new HashSet<Question>());
         return "quiz-add-page";
     }
+
     @PostMapping("/add")
-    @Secured("ROLE_ADMIN")
     public String saveQuiz(
             Principal principal,
             @Valid @ModelAttribute Quiz quiz,
